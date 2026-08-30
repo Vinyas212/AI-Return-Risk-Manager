@@ -1,0 +1,30 @@
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Backend
+backend/target/
+
+# Python
+ml-service/.venv/
+ml-service/venv/
+ml-service/__pycache__/
+ml-service/*.pyc
+
+# Environment / secrets
+.env
+.env.*
+*.env
+application-local.properties
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Generated modernization files
+backend/.github/modernize/
