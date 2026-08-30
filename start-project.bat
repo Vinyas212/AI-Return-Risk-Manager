@@ -1,18 +1,19 @@
 @echo off
+set "ROOT=%~dp0"
 title AI Return Risk Manager
 
 echo Starting Python ML service...
-start "ML Service" cmd /k "cd /d C:\Users\ASUS\Downloads\AI-Return-Risk-Manager\ml-service && uvicorn app:app --reload --port 8000"
+start "ML Service" cmd /k "cd /d ""%ROOT%ml-service"" && uvicorn app:app --reload --port 8000"
 
 timeout /t 3 > nul
 
 echo Starting Spring Boot backend...
-start "Backend" cmd /k "cd /d C:\Users\ASUS\Downloads\AI-Return-Risk-Manager\backend && .\mvnw.cmd spring-boot:run"
+start "Backend" cmd /k "cd /d ""%ROOT%backend"" && .\mvnw.cmd spring-boot:run"
 
 timeout /t 5 > nul
 
 echo Starting React frontend...
-start "Frontend" cmd /k "cd /d C:\Users\ASUS\Downloads\AI-Return-Risk-Manager\frontend && npm run dev"
+start "Frontend" cmd /k "cd /d ""%ROOT%frontend"" && npm run dev"
 
 echo.
 echo All services started.
