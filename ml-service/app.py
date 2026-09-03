@@ -22,6 +22,7 @@ GET /
 
 import json
 import logging
+import os
 
 import joblib
 import numpy as np
@@ -68,11 +69,22 @@ app = FastAPI(
 # CORS
 # ===============================================================
 
+allowed_origins = [
+    "http://localhost:5173"
+]
+
+deployed_frontend = os.getenv(
+    "CORS_ALLOWED_ORIGIN"
+)
+
+if deployed_frontend:
+    allowed_origins.append(
+        deployed_frontend
+    )
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173"
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -628,7 +640,6 @@ def predict(order: Order):
         order.model_dump()
     ])
 
-
     # -----------------------------------------------------------
     # ONE-HOT ENCODING
     # -----------------------------------------------------------
@@ -642,7 +653,6 @@ def predict(order: Order):
         ]
     )
 
-
     # -----------------------------------------------------------
     # MATCH TRAINING COLUMNS
     # -----------------------------------------------------------
@@ -653,11 +663,9 @@ def predict(order: Order):
 
             row_encoded[col] = 0
 
-
     row_encoded = row_encoded[
         feature_cols
     ]
-
 
     # -----------------------------------------------------------
     # RISK SCORE
@@ -672,7 +680,6 @@ def predict(order: Order):
     risk_score = float(
         probabilities[0][1]
     )
-
 
     # -----------------------------------------------------------
     # TRUE PER-ORDER SHAP EXPLANATION
@@ -725,7 +732,6 @@ def predict(order: Order):
             "Forest feature importance instead."
         )
 
-
     # -----------------------------------------------------------
     # RISK LEVEL
     # -----------------------------------------------------------
@@ -741,7 +747,6 @@ def predict(order: Order):
     else:
 
         risk_level = "Low"
-
 
     # -----------------------------------------------------------
     # RESPONSE
