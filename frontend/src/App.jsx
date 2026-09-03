@@ -51,6 +51,7 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [validationErrors, setValidationErrors] = useState([])
+  const [scoringWaitSeconds, setScoringWaitSeconds] = useState(0)
 
   // ================= AUDIT LOG =================
 
@@ -95,6 +96,21 @@ function App() {
     loadThresholdCurve()
     loadActiveThreshold()
   }, [])
+
+  // ================= SCORING WAIT TIMER =================
+
+  useEffect(() => {
+    if (!loading) {
+      setScoringWaitSeconds(0)
+      return
+    }
+
+    const timer = window.setInterval(() => {
+      setScoringWaitSeconds(seconds => seconds + 1)
+    }, 1000)
+
+    return () => window.clearInterval(timer)
+  }, [loading])
 
   // ================= AUDIT LOG =================
 
@@ -924,10 +940,22 @@ function App() {
           >
 
             {loading
-              ? 'Scoring…'
+              ? scoringWaitSeconds < 8
+                ? 'Analyzing order…'
+                : 'Waking AI service & analyzing…'
               : 'Score this order'}
 
           </button>
+
+          <p className="metrics-note" style={{ marginTop: '10px', marginBottom: '0', textAlign: 'center' }}>
+            Demo hosting note: The first prediction after inactivity may take up to about 60 seconds while the free cloud services wake up. Subsequent predictions are typically much faster.
+          </p>
+
+          {loading && scoringWaitSeconds >= 8 && (
+            <p className="metrics-note" style={{ marginTop: '8px', marginBottom: '0', textAlign: 'center' }}>
+              The request is still active. Please keep this page open while the backend and AI service finish waking up.
+            </p>
+          )}
 
           {error && (
             <p className="error-text">
