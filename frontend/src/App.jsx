@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react'
 import './App.css'
 
 // Spring Boot backend
-const API_BASE = 'http://localhost:9090/api/orders'
+const API_BASE =
+  import.meta.env.VITE_API_BASE || 'http://localhost:9090/api/orders'
 
 // Python ML service
-const ML_API_BASE = 'http://127.0.0.1:8000'
+const ML_API_BASE =
+  import.meta.env.VITE_ML_API_BASE || 'http://127.0.0.1:8000'
 
 const MODEL_METRICS = {
   precision: 0.46,
